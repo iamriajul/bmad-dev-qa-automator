@@ -276,3 +276,52 @@ Within 1-2 years, the BMad CLI becomes the **standard orchestration layer** for 
 - **Proper Context Management**: Direct message history control
 - **Rate Limit Handling**: Built-in retry logic and backoff
 - **Type Safety**: Full TypeScript types for requests/responses
+
+## Risks & Open Questions
+
+### Key Risks
+- **Agent Hallucination:** AI agents might claim story completion without actual implementation, leading to false progress reports
+- **Infinite Loops:** QA repeatedly rejecting stories with Dev unable to satisfy requirements, requiring circuit breaker logic
+- **Dependency Deadlocks:** SM might create circular dependencies that prevent any story from being processed
+- **Breaking Changes:** Claude SDK or API updates could break automation without warning
+- **File System Conflicts:** Multiple stories modifying the same files could create merge conflicts
+- **Runtime Validation Gap:** Dev agent can write code but can't run it to verify functionality
+
+### Open Questions
+- How will agents handle merge conflicts when multiple stories modify the same files?
+- Should we implement a "confidence threshold" where low-confidence agent responses trigger human review?
+- How do we handle stories that require external resources (APIs, databases) the Dev agent can't access?
+- Should there be a maximum retry limit for stuck stories before human escalation?
+- How do we validate that generated code actually works without a runtime environment?
+- What's the optimal story batching strategy for overnight runs?
+- Should the system pause for human review at certain checkpoints?
+
+### Areas Needing Further Research
+- **Agent Prompt Engineering:** Optimal prompts for each agent type to ensure consistent, parseable outputs
+- **State Recovery Patterns:** Best practices for resuming after failures without losing progress
+- **Multi-Story Coordination:** How to handle stories that need to be developed in parallel
+- **Testing Integration:** Whether Dev agent can write and run tests to self-validate
+- **Performance Benchmarks:** Expected completion times for different story complexities
+- **Error Pattern Analysis:** Common failure modes in existing BMad workflows to preemptively handle
+- **Merge Conflict Resolution:** Strategies for handling overlapping file changes across stories
+
+### Mitigated Risks (Thanks to Unlimited Plan & Story Isolation):
+- ✅ **API Rate Limiting:** Not a concern with unlimited subscription
+- ✅ **Context Degradation:** Each story gets fresh context, maintaining focus
+- ✅ **Cost Overruns:** Unlimited plan removes budget constraints
+- ✅ **Context Window Limits:** Story isolation keeps contexts small and manageable
+
+## Next Steps
+
+### Immediate Actions
+1. **Review & Validate Project Brief**: Ensure all requirements and assumptions are accurate
+2. **Set Up Development Environment**: Initialize TypeScript project with Claude SDK
+3. **Create MVP Prototype**: Build minimal version processing single story end-to-end
+4. **Test Agent Prompts**: Validate SM, Dev, and QA prompts produce parseable outputs
+5. **Implement Dependency Graph**: Add SM's JSON generation and parsing logic
+6. **Add State Machine**: Build story lifecycle management system
+7. **Create Logging System**: Implement activity tracking for morning reviews
+8. **Run Overnight Test**: Execute full autonomous cycle on sample project
+
+### PM Handoff
+This Project Brief provides the full context for the BMad CLI Automation Tool. The solution enables 24/7 autonomous development by orchestrating SM, Dev, and QA agents through story lifecycles. With unlimited Claude subscriptions and story-isolated contexts, teams can wake up to completed features instead of yesterday's backlog. Please review thoroughly and create the PRD to formalize requirements and acceptance criteria for this game-changing automation tool.
